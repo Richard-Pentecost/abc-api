@@ -23,7 +23,7 @@ before((done) => {
   global.chai = chai;
   global.expect = chai.expect;
 
-  mongoose.connect(process.env.DATABASE_CONN, { useNewUrlParser: true, useUnifiedTypology: true }, () => {
+  mongoose.connect(process.env.DATABASE_CONN, { useNewUrlParser: true }, () => {
     // start test server on any available port
     server = app.listen();
     // set the server address as a global variable
