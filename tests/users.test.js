@@ -28,7 +28,9 @@ describe('/users', () => {
             expect(user.firstName).to.equal(fakeUser.firstName);
             expect(user.lastName).to.equal(fakeUser.lastName);
             expect(user.email).to.equal(fakeUser.email);
-            expect(user.password).to.equal(fakeUser.password);
+            expect(user.password).not.to.equal(fakeUser.password);
+            expect(user.password).to.have.length(60);
+            expect(res.body).not.to.have.property('password');
           });
           done();
         });
