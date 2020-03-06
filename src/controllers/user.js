@@ -12,6 +12,17 @@ exports.create = async (req, res) => {
     const data = await user.save();
     res.status(201).json(user.sanitise(data));
   } catch (err) {
-    res.status(400).send(err.message);
+    if (err.name === 'ValidationError') {
+      const emailError = err.errors.email ? err.errors.email.message : null;
+      const passwordError = err.errors.password ? err.errors.password.message : null;
+      res.status(400).json({
+        errors: {
+          email: emailError,
+          password: passwordError,
+        },
+      });
+    } else {
+      res.sendStatus(500);
+    }
   }
 };

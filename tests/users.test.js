@@ -14,7 +14,7 @@ describe('/users', () => {
         firstName: 'Richard',
         lastName: 'Pentecost',
         email: 'r@r.com',
-        password: '1234',
+        password: '12345678',
       };
       chai.request(server)
         .post('/users')
@@ -31,6 +31,48 @@ describe('/users', () => {
             expect(user.password).not.to.equal(fakeUser.password);
             expect(user.password).to.have.length(60);
             expect(res.body).not.to.have.property('password');
+          });
+          done();
+        });
+    });
+
+    it('validates a users email address', done => {
+      const fakeUser = {
+        firstName: 'Richard',
+        lastName: 'Pentecost',
+        email: 'richard',
+        password: '12345678',
+      };
+      chai.request(server)
+        .post('/users')
+        .send(fakeUser)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.status).to.equal(400);
+          expect(res.body.errors.email).to.equal('Invalid email address');
+          User.countDocuments((error, count) => {
+            expect(count).to.equal(0);
+          });
+          done();
+        });
+    });
+
+    it('validates that a users password is at least 8 characters long', done => {
+      const fakeUser = {
+        firstName: 'Richard',
+        lastName: 'Pentecost',
+        email: 'r@r.com',
+        password: '1234',
+      };
+      chai.request(server)
+        .post('/users')
+        .send(fakeUser)
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.status).to.equal(400);
+          expect(res.body.errors.password).to.equal('Password must be at least 8 characters long');
+          User.countDocuments((error, count) => {
+            expect(count).to.equal(0);
           });
           done();
         });
