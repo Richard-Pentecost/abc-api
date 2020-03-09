@@ -5,6 +5,11 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
+
+    if (!await user.validatePassword(password)) {
+      res.status(401).json({ error: 'User/password combination incorrect' });
+    }
+
     const payload = {
       firstName: user.firstName,
       lastName: user.lastName,

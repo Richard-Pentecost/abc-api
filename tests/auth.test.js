@@ -22,5 +22,31 @@ describe('/auth', () => {
           expect(token).to.contain({ lastName: user.body.lastName });
         });
     });
+
+    it('fails to login with invalid email', async () => {
+      const data = DataFactory.user();
+      await UserHelpers.signUp(data);
+      chai.request(server)
+        .post('/auth/login')
+        .send({ email: 'r@r.com', password: data.password })
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.status).to.equal(401);
+          expect(res.body.error).to.equal('User not found');
+        });
+    });
+
+    it('fails to login with invalid password', async () => {
+      const data = DataFactory.user();
+      await UserHelpers.signUp(data);
+      chai.request(server)
+        .post('/auth/login')
+        .send({ email: data.email, password: '12345678' })
+        .end((err, res) => {
+          expect(err).to.equal(null);
+          expect(res.status).to.equal(401);
+          expect(res.body.error).to.equal('User/password combination incorrect');
+        });
+    });
   });
 });

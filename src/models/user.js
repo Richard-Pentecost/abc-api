@@ -42,7 +42,7 @@ userSchema.methods.sanitise = function sanitise(user) {
 };
 
 userSchema.methods.validatePassword = function validatePassword(password) {
-  return bcrypt.compareSync(password, this.password); 
+  return bcrypt.compareSync(password, this.password);
 };
 
 const User = mongoose.model('User', userSchema);
