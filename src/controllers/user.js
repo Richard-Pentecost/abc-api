@@ -1,14 +1,11 @@
 const User = require('../models/user');
 
 exports.create = async (req, res) => {
-  const user = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-  });
+  const { firstName, lastName, email, password } = req.body;
 
   try {
+    // eslint-disable-next-line object-curly-newline
+    const user = new User({ firstName, lastName, email, password });
     const data = await user.save();
     res.status(201).json(user.sanitise(data));
   } catch (err) {

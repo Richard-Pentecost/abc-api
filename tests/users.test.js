@@ -1,15 +1,8 @@
-const mongoose = require('mongoose');
 const User = require('../src/models/user');
 const UserHelpers = require('./helpers/user-helpers');
 const DataFactory = require('./helpers/data-factory');
 
 describe('/users', () => {
-  beforeEach(done => {
-    mongoose.connection.dropDatabase(() => {
-      done();
-    });
-  });
-
   describe('POST /users', () => {
     it('creates a new user in the database', done => {
       const data = DataFactory.user();
