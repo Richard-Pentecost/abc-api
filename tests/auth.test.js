@@ -1,4 +1,4 @@
-const { signUp, login} = require('./helpers/user-helpers');
+const { signUp, login } = require('./helpers/user-helpers');
 const DataFactory = require('./helpers/data-factory');
 const jwt = require('jsonwebtoken');
 
