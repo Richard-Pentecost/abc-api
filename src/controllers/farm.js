@@ -15,6 +15,8 @@ exports.create = async (req, res) => {
           name: nameError,
         },
       });
+    } else {
+      res.sendStatus(500);
     }
   }
 };
