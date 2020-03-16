@@ -1,10 +1,10 @@
 const Farm = require('../models/farm');
 
 exports.create = async (req, res) => {
-  const { name, farmer } = req.body;
+  const { user, name, farmer } = req.body;
 
   try {
-    const farm = new Farm({ name, farmer });
+    const farm = new Farm({ user, name, farmer });
     const data = await farm.save();
     res.status(201).json(data);
   } catch (err) {

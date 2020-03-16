@@ -33,14 +33,17 @@ before((done) => {
   });
 });
 
-beforeEach((done) => {
-  mongoose.connection.dropDatabase(() => {
-    done();
-  });
+// beforeEach((done) => {
+//   mongoose.connection.dropDatabase(() => {
+//     done();
+//   });
+// });
+
+beforeEach(async () => {
+  mongoose.connection.dropDatabase();
 });
 
 after((done) => {
-
   mongoose.connection.close(() => {
     server.close();
     done();
