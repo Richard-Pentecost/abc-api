@@ -6,3 +6,8 @@ exports.user = (options = {}) => ({
   email: options.email || faker.internet.email(),
   password: options.password || faker.internet.password(),
 });
+
+exports.farm = (options = {}) => ({
+  name: options.name || faker.random.word(),
+  farmer: options.farmer || faker.name.findName(),
+});

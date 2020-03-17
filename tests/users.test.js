@@ -36,7 +36,7 @@ describe('/users', () => {
       }
     });
 
-    it('validates a users email address', async () => {
+    it('validates a users password', async () => {
       const data = DataFactory.user({ password: '1234' });
       try {
         const res = await UserHelpers.signUp(data);
