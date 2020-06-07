@@ -6,13 +6,21 @@ const farmSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  name: {
+  farmName: {
     type: String,
-    required: [true, 'A name must be provided'],
+    required: [true, 'A farm name must be provided'],
   },
-  farmer: {
+  postcode: {
     type: String,
-    required: [true, 'A farmer must be provided'],
+    required: [true, 'A postcode must be provided'],
+  },
+  contactName: {
+    type: String,
+    required: [true, 'A contact name must be provided'],
+  },
+  contactNumber: {
+    type: String,
+    required: [true, 'A contact number must be provided'],
   },
 });
 

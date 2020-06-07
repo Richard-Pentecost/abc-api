@@ -13,6 +13,7 @@ mongoose.connect(
 
 mongoose.connection.on('connected', () => {
   console.log('Connected to mongo instance');
+  console.log('Database is running port on 3000');
 });
 
 mongoose.connection.on('error', err => {

@@ -2,8 +2,8 @@ const { signUp, login } = require('./helpers/user-helpers');
 const DataFactory = require('./helpers/data-factory');
 const jwt = require('jsonwebtoken');
 
-describe('/auth', () => {
-  describe('POST/auth/login', () => {
+describe('/login', () => {
+  describe('POST/login', () => {
     it('logs a signed up user in and issues jwt', async () => {
       const data = DataFactory.user();
       try {

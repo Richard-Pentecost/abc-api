@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Richard-Pentecost/abc-api#readme",
   "dependencies": {
     "bcrypt": "^4.0.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "isemail": "^3.2.0",
     "jsonwebtoken": "^8.5.1",

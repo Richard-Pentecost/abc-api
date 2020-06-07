@@ -1,42 +1,54 @@
 const { signUp, login } = require('./helpers/user-helpers');
 const { create, createMany } = require('./helpers/farm-helpers');
+const { addData } = require('./helpers/data-helpers');
 const DataFactory = require('./helpers/data-factory');
 const Farm = require('../src/models/farm');
+const Data = require('../src/models/data');
 
-describe('/farms', () => {
+describe('/farms/:farmId', () => {
   const userData = DataFactory.user();
+  const farmData = DataFactory.farm();
   let user;
   let token;
+  let farm;
 
   beforeEach(async () => {
     user = await signUp(userData);
     const credentials = await login(userData.email, userData.password);
     token = credentials.body.token;
+    farm = await create(farmData, token);
   });
 
 
-  describe('POST /farms', () => {
-    it('creates a farm listing', async () => {
+  describe('POST /farms/:farmId', () => {
+    it('creates a data input', async () => {
       try {
-        const farm = DataFactory.farm();
-        const res = await create(farm, token);
+        const data = DataFactory.data();
+        const farmId = farm.body._id;
+        const res = await addData(farmId, data, token);
         expect(res.status).to.equal(201);
 
-        const newFarm = await Farm.findById(res.body._id);
-        expect(JSON.stringify(newFarm.user)).to.equal(JSON.stringify(user.body._id));
-        expect(newFarm.farmName).to.equal(farm.farmName);
-        expect(newFarm.postcode).to.equal(farm.postcode);
-        expect(newFarm.contactName).to.equal(farm.contactName);
-        expect(newFarm.contactNumber).to.equal(farm.contactNumber);
-
-        const count = await Farm.countDocuments();
+        const newData = await Data.findById(res.body._id);
+        expect(JSON.stringify(newData.user)).to.equal(JSON.stringify(user.body._id));
+        expect(JSON.stringify(newData.farm)).to.equal(JSON.stringify(farm.body._id));
+        expect(newData.data.date).to.eql(data.date);
+        expect(newData.data.product).to.equal(data.product);
+        expect(newData.data.quantity).to.equal(data.quantity);
+        expect(newData.data.meterReading).to.equal(data.meterReading);
+        expect(newData.data.initialFloat).to.equal(data.initialFloat);
+        expect(newData.data.waterUsage).to.equal(data.waterUsage);
+        expect(newData.data.pumpDial).to.equal(data.pumpDial);
+        expect(newData.data.float).to.equal(data.float);
+        expect(newData.data.reading).to.equal(data.reading);
+        expect(newData.data.comments).to.equal(data.comments);
+        const count = await Data.countDocuments();
         expect(count).to.equal(1);
       } catch (err) {
         throw (err);
       }
     });
 
-    it('validates that a farm has a name', async () => {
+    xit('validates that a farm has a name', async () => {
       try {
         await signUp(userData);
         const farm = {
@@ -56,7 +68,7 @@ describe('/farms', () => {
       }
     });
 
-    it('farm listing will not be created if the user is not authorized', async () => {
+    xit('farm listing will not be created if the user is not authorized', async () => {
       try {
         const farm = DataFactory.farm();
         const res = await chai.request(server)
@@ -99,7 +111,7 @@ describe('/farms', () => {
       }
     });
 
-    it('filters farms by farmer', async () => {
+    xit('filters farms by farmer', async () => {
       const farms = [
         DataFactory.farm({ contactName: 'Richard' }),
         DataFactory.farm({ contactName: 'James' }),
@@ -125,7 +137,7 @@ describe('/farms', () => {
       }
     });
 
-    it('filters farms by name', async () => {
+    xit('filters farms by name', async () => {
       const farms = [
         DataFactory.farm({ farmName: 'North Farm' }),
         DataFactory.farm({ farmName: 'North West Farm' }),
