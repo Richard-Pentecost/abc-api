@@ -1,5 +1,6 @@
 const Data = require('../models/data');
 const Farm = require('../models/farm');
+const moment = require('moment');
 
 exports.create = async (req, res) => {
   const newData = new Data({
@@ -41,7 +42,31 @@ exports.list = (req, res) => {
     if (!farm) {
       res.status(400).json({ error: 'Farm could not be found ' });
     } else {
-      Data.find({ farmId: req.params.farmId })
+      let query = Data.find({ farmId: req.params.farmId });
+
+      if (req.query.records) {
+        const queryObj = JSON.parse(req.query.records);
+        const today = new Date(new Date(Date.now()).setHours(1, 0, 0));
+        let startDate;
+        switch (queryObj.searchString) {
+          case '1 month':
+            startDate = new Date(moment(today).subtract(1, 'months'));
+            break;
+          case '3 months':
+            startDate = new Date(moment(today).subtract(3, 'months'));
+            break;
+          case '6 months':
+            startDate = new Date(moment(today).subtract(6, 'months'));
+            break;
+          default:
+            startDate = new Date(moment(today).subtract(1, 'year'));
+            break;
+        }
+        query = query.where('data.date').gte(startDate);
+      }
+
+      query
+        .sort({ 'data.date': -1 })
         .exec((e, data) => {
           if (!data) {
             res.status(400).json({ error: 'Data could not be found' });

@@ -51,13 +51,13 @@ describe('/farms/:farmId', () => {
     xit('validates that a farm has a name', async () => {
       try {
         await signUp(userData);
-        const farm = {
+        const newFarmData = {
           postcode: 'CW58HQ',
           contactName: 'Richard',
           contactNumber: '012345678',
         };
 
-        const res = await create(farm, token);
+        const res = await create(newFarmData, token);
         expect(res.status).to.equal(400);
         expect(res.body.errors.farmName).to.equal('A farm name must be provided');
 
@@ -70,10 +70,10 @@ describe('/farms/:farmId', () => {
 
     xit('farm listing will not be created if the user is not authorized', async () => {
       try {
-        const farm = DataFactory.farm();
+        const newFarm = DataFactory.farm();
         const res = await chai.request(server)
           .post('/farms')
-          .send(farm);
+          .send(newFarm);
 
         expect(res.status).to.equal(401);
         expect(res.body.message).to.equal('You are not authorized to create listing');
@@ -119,7 +119,7 @@ describe('/farms/:farmId', () => {
         DataFactory.farm({ contactName: 'James' }),
       ];
 
-      const filteredFarms = farms.filter(farm => farm.contactName === 'Richard');
+      const filteredFarms = farms.filter(f => f.contactName === 'Richard');
 
       try {
         await createMany(farms, token);
@@ -145,7 +145,7 @@ describe('/farms/:farmId', () => {
         DataFactory.farm({ farmName: 'East Farm' }),
       ];
 
-      const filteredFarms = farms.filter(farm => farm.farmName.includes('East'));
+      const filteredFarms = farms.filter(f => f.farmName.includes('East'));
 
       try {
         await createMany(farms, token);

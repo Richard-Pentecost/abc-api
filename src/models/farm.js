@@ -24,6 +24,15 @@ const farmSchema = new mongoose.Schema({
   },
 });
 
+farmSchema.pre('save', function dataFormat(next) {
+  this.farmName = this.farmName.toLowerCase();
+  this.postcode = this.postcode.toLowerCase().split('').filter(c => c !== ' ').join('');
+  this.contactName = this.contactName.toLowerCase();
+  this.contactNumber = this.contactNumber.split('').filter(i => i !== ' ').join('');
+
+  next();
+});
+
 const Farm = mongoose.model('Farm', farmSchema);
 
 module.exports = Farm;

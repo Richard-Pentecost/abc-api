@@ -1,4 +1,11 @@
 const Farm = require('../models/farm');
+const Data = require('../models/data');
+const {
+  farmNameFormat,
+  postcodeFormat,
+  contactNameFormat,
+  contactNumberFormat,
+} = require('../utils/dataFormat');
 
 exports.create = async (req, res) => {
   const farm = new Farm({
@@ -27,6 +34,7 @@ exports.create = async (req, res) => {
         },
       });
     } else {
+      console.log(err);
       res.sendStatus(500);
     }
   }
@@ -53,31 +61,37 @@ exports.list = async (req, res) => {
 
   try {
     const farms = await query.exec();
+    farms.map(farm => {
+      farm.farmName = farmNameFormat(farm.farmName);  
+      farm.postcode = postcodeFormat(farm.postcode);
+      farm.contactName = contactNameFormat(farm.contactName);
+      farm.contactNumber = contactNumberFormat(farm.contactNumber);
+      return farm;
+    });
     res.status(200).json(farms);
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 };
 
-exports.find = (req, res) => {
-  Farm.findById(req.params.farmId, (err, farm) => {
-    if (!farm) {
-      res.status(401).json({ error: 'Farm could not be found' });
-    } else {
-      res.status(200).json(farm);
-    }
-  });
-};
+// exports.find = (req, res) => {
+//   console.log('[Find]');
+//   Farm.findById(req.params.farmId, (err, farm) => {
+//     if (!farm) {
+//       res.status(401).json({ error: 'Farm could not be found' });
+//     } else {
+//       res.status(200).json(farm);
+//     }
+//   });
+// };
 
 exports.update = (req, res) => {
   Farm.findById(req.params.farmId, async (err, farm) => {
     if (!farm) {
       res.status(404).json({ error: 'Farm could not be found' });
     } else {
-      console.log(farm);
-      console.log(req.body);
       const updatedFarm = await farm.set(req.body).save();
-      console.log(updatedFarm);
       res.status(200).json(updatedFarm);
     }
   });
@@ -85,12 +99,13 @@ exports.update = (req, res) => {
 
 
 exports.delete = (req, res) => {
-  console.log(req.params.farmId);
   Farm.findByIdAndDelete(req.params.farmId, (err) => {
     if (err) {
-      console.log(err);
       res.status(404).json({ error: 'Farm could not be found' });
     } else {
+      Data.deleteMany({ farmId: req.params.farmId }, (error) => {
+        console.log(error);
+      });
       res.sendStatus(200);
     }
   });

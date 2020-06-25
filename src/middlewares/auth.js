@@ -4,8 +4,7 @@ const auth = (req, res, next) => {
   const token = req.get('Authorization');
   jwt.verify(token, process.env.JWT_SECRET, (error, authorizer) => {
     if (error) {
-      // console.log(error);
-      res.status(401).json({ message: 'You are not authorized to create listing' });
+      res.status(401).json({ message: 'You are not authorized to do this' });
     } else {
       req.authorizer = authorizer;
       next();
