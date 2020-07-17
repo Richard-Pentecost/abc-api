@@ -45,7 +45,7 @@ exports.list = async (req, res) => {
   if (req.query.query) {
     const queryObj = JSON.parse(req.query.query);
     if (queryObj.searchString) {
-      const regexQuery = { $regex: queryObj.searchString };
+      const regexQuery = { $regex: queryObj.searchString.toLowerCase() };
       query.or([{ farmName: regexQuery }, { postcode: regexQuery }, { contactName: regexQuery }]);
       // if (queryObj.contactName) {
       //   query.where('contactName').regex(queryObj.contactName);
@@ -58,7 +58,6 @@ exports.list = async (req, res) => {
       // });
     }
   }
-
   try {
     const farms = await query.exec();
     farms.map(farm => {
