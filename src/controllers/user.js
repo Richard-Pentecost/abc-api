@@ -38,3 +38,13 @@ exports.list = async (req, res) => {
     res.sendStatus(400);
   }
 };
+
+exports.delete = (req, res) => {
+  User.findByIdAndDelete(req.params.userId, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'User could not be found' });
+    } else {
+      res.sendStatus(200);
+    }
+  });
+};
