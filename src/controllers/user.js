@@ -13,7 +13,6 @@ exports.create = async (req, res) => {
     const data = await user.save();
     res.status(201).json(user.sanitise(data));
   } catch (err) {
-    console.log('[Create Error]', err);
     if (err.name === 'ValidationError') {
       const emailError = err.errors.email ? err.errors.email.message : null;
       const passwordError = err.errors.password ? err.errors.password.message : null;
@@ -37,6 +36,50 @@ exports.list = async (req, res) => {
     console.log(err);
     res.sendStatus(400);
   }
+};
+
+exports.find = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+  
+    res.status(201).json({
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      permissionLevel: user.permissionLevel,
+      id: user._id,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: 'User could not be found '});
+  }
+};
+
+exports.updateUser = (req, res) => {
+  User.findById(req.params.userId, async (err, user) => {
+    if (!user) {
+      res.status(404).json({ error: 'User could not be found' });
+    } else {
+      const updatedUser = await user.set(req.body).save();
+      res.status(200).json(updatedUser);
+    }
+  });
+};
+
+exports.updatePassword = (req, res) => {
+  User.findById(req.params.userId, async (err, user) => {
+    if (!user) {
+      res.status(404).json({ error: 'User could not be found' });
+    } else {
+      const { oldPassword, newPassword } = req.body
+      if (!await user.validatePassword(oldPassword)) {
+        console.log('here');
+        res.status(401).json({ error: 'Old password is incorrect' });
+      }
+      const updatedUser = await user.set({ password: newPassword }).save();
+      res.status(200).json(updatedUser);
+    }
+  });
 };
 
 exports.delete = (req, res) => {
