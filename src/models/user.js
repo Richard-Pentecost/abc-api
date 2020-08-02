@@ -5,19 +5,21 @@ const isEmail = require('isemail');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'A name must be provided'],
   },
   username: {
     type: String,
-    required: true,
+    required: [true, 'A username must be provided'],
   },
   email: {
     type: String,
     validate: [isEmail.validate, 'Invalid email address'],
+    required: [true, 'An email address is required'],
   },
   password: {
     type: String,
     validate: [p => p.length > 7, 'Password must be at least 8 characters long'],
+    required: [true, 'A password is required'],
   },
   permissionLevel: {
     type: String,
@@ -39,6 +41,16 @@ userSchema.pre('save', function encryptPassword(next) {
     });
   }
 });
+
+userSchema.path('email').validate(async (value) => {
+  const emailCount = await mongoose.models.User.countDocuments({ email: value });
+  return !emailCount;
+}, 'Email already exists');
+
+userSchema.path('username').validate(async (value) => {
+  const usernameCount = await mongoose.models.User.countDocuments({ username: value });
+  return !usernameCount;
+}, 'Username already exists');
 
 userSchema.methods.sanitise = function sanitise(user) {
   const { password, ...noPassword } = user.toObject();

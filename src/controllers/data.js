@@ -1,40 +1,53 @@
 const Data = require('../models/data');
 const Farm = require('../models/farm');
 const moment = require('moment');
+const { dataErrorMessages } = require('../utils/errorMessages');
 
 exports.create = async (req, res) => {
   const newData = new Data({
-    userId: req.authorizer.id,
     farmId: req.params.farmId,
-    data: {
-      date: req.body.date,
-      product: req.body.product,
-      quantity: req.body.quantity,
-      meterReading: req.body.meterReading,
-      initialFloat: req.body.initialFloat,
-      waterUsage: req.body.waterUsage,
-      pumpDial: req.body.pumpDial,
-      float: req.body.float,
-      reading: req.body.reading,
-      comments: req.body.comments,
+    date: req.body.date,
+    acidData: {
+      product: req.body.acidData.product,
+      quantity: req.body.acidData.quantity,
+      meterReading: req.body.acidData.meterReading,
+      initialFloat: req.body.acidData.initialFloat,
+      // waterUsage: req.body.acidwaterUsage,
+      pumpDial: req.body.acidData.pumpDial,
+      float: req.body.acidData.float,
+      reading: req.body.acidData.reading,
+      comments: req.body.acidData.comments,
+    },
+    chlorineData: {
+      product: req.body.chlorineData.product,
+      quantity: req.body.chlorineData.quantity,
+      meterReading: req.body.chlorineData.meterReading,
+      initialFloat: req.body.chlorineData.initialFloat,
+      // waterUsage: req.body.acidwaterUsage,
+      pumpDial: req.body.chlorineData.pumpDial,
+      float: req.body.chlorineData.float,
+      reading: req.body.chlorineData.reading,
+      comments: req.body.chlorineData.comments,
     },
   });
-  // console.log(['New Data'], newData);
 
-  Farm.findById(req.params.farmId, (err, farm) => {
-    if (!farm) {
-      res.status(404).json({ error: 'This farm could not be found.' });
-    } else {
-      newData.save()
-        .then(response => {
-          // console.log(response);
-          res.status(201).json(response);
-        })
-        .catch(error => {
-          console.log('save error', error);
-        });
+  const farm = await Farm.findById(req.params.farmId);
+
+  if (farm) {
+    try {
+      const data = await newData.save();
+      res.status(201).json(data);
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        const errorObj = dataErrorMessages(err);
+        res.status(401).json({ errors: errorObj });
+      } else {
+        res.sendStatus(500);
+      }
     }
-  });
+  } else {
+    res.status(404).json({ error: 'This farm could not be found' });
+  }
 };
 
 exports.list = (req, res) => {
@@ -62,11 +75,11 @@ exports.list = (req, res) => {
             startDate = new Date(moment(today).subtract(1, 'year'));
             break;
         }
-        query = query.where('data.date').gte(startDate);
+        query = query.where('date').gte(startDate);
       }
 
       query
-        .sort({ 'data.date': -1 })
+        .sort({ date: -1 })
         .exec((e, data) => {
           if (!data) {
             res.status(400).json({ error: 'Data could not be found' });
@@ -78,21 +91,28 @@ exports.list = (req, res) => {
   });
 };
 
-exports.update = (req, res) => {
-  Farm.findById(req.params.farmId, (err, farm) => {
-    if (!farm) {
-      res.status(400).json({ error: 'Farm could not be found' });
+exports.update = async (req, res) => {
+  const farm = await Farm.findById(req.params.farmId);
+  if (!farm) {
+    res.status(400).json({ error: 'Farm could not be found' });
+  }
+
+  const data = await Data.findById(req.params.dataId);
+  if (!data) {
+    res.status(400).json({ error: 'Data could not be found' });
+  }
+
+  try {
+    const updatedData = await data.set(req.body).save();
+    res.status(200).json(updatedData);
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      const errorObj = dataErrorMessages(err);
+      res.status(401).json({ errors: errorObj });
     } else {
-      Data.findById(req.params.dataId, async (error, data) => {
-        if (!data) {
-          res.status(400).json({ error: 'Data could not be found' });
-        } else {
-          const updatedData = await data.set({ data: req.body }).save();
-          res.status(200).json(updatedData);
-        }
-      });
+      res.sendStatus(500);
     }
-  });
+  }
 };
 
 

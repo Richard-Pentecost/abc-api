@@ -1,5 +1,6 @@
 const Farm = require('../models/farm');
 const Data = require('../models/data');
+const { farmErrorMessages } = require('../utils/errorMessages');
 const {
   farmNameFormat,
   postcodeFormat,
@@ -20,21 +21,9 @@ exports.create = async (req, res) => {
     res.status(201).json(data);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      const farmNameError = err.errors.farmName ? err.errors.farmName.message : null;
-      const postcodeError = err.errors.postcode ? err.errors.postcode.message : null;
-      const contactNameError = err.errors.contactName ? err.errors.contactName.message : null;
-      const contactNumberError = err.errors.contactNumber ? err.errors.contactNumber.message : null;
-
-      res.status(400).json({
-        errors: {
-          farmName: farmNameError,
-          postcode: postcodeError,
-          contactName: contactNameError,
-          contactNumber: contactNumberError,
-        },
-      });
+      const errorObj = farmErrorMessages(err);
+      res.status(404).json({ errors: errorObj });
     } else {
-      console.log(err);
       res.sendStatus(500);
     }
   }
@@ -61,7 +50,7 @@ exports.list = async (req, res) => {
   try {
     const farms = await query.exec();
     farms.map(farm => {
-      farm.farmName = farmNameFormat(farm.farmName);  
+      farm.farmName = farmNameFormat(farm.farmName);
       farm.postcode = postcodeFormat(farm.postcode);
       farm.contactName = contactNameFormat(farm.contactName);
       farm.contactNumber = contactNumberFormat(farm.contactNumber);
@@ -69,29 +58,26 @@ exports.list = async (req, res) => {
     });
     res.status(200).json(farms);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 };
 
-// exports.find = (req, res) => {
-//   console.log('[Find]');
-//   Farm.findById(req.params.farmId, (err, farm) => {
-//     if (!farm) {
-//       res.status(401).json({ error: 'Farm could not be found' });
-//     } else {
-//       res.status(200).json(farm);
-//     }
-//   });
-// };
-
 exports.update = (req, res) => {
-  Farm.findById(req.params.farmId, async (err, farm) => {
+  Farm.findById(req.params.farmId, async (error, farm) => {
     if (!farm) {
       res.status(404).json({ error: 'Farm could not be found' });
     } else {
-      const updatedFarm = await farm.set(req.body).save();
-      res.status(200).json(updatedFarm);
+      try {
+        const data = await farm.set(req.body).save();
+        res.status(201).json(data);
+      } catch (err) {
+        if (err.name === 'ValidationError') {
+          const errorObj = farmErrorMessages(err);
+          res.status(404).json({ errors: errorObj });
+        } else {
+          res.sendStatus(500);
+        }
+      }
     }
   });
 };

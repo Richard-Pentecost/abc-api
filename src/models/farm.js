@@ -29,7 +29,6 @@ farmSchema.pre('save', function dataFormat(next) {
   this.postcode = this.postcode.toLowerCase().split('').filter(c => c !== ' ').join('');
   this.contactName = this.contactName.toLowerCase();
   this.contactNumber = this.contactNumber.split('').filter(i => i !== ' ').join('');
-
   next();
 });
 

@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { userErrorMessages } = require('../utils/errorMessages');
 
 exports.create = async (req, res) => {
   const user = new User({
@@ -14,14 +15,8 @@ exports.create = async (req, res) => {
     res.status(201).json(user.sanitise(data));
   } catch (err) {
     if (err.name === 'ValidationError') {
-      const emailError = err.errors.email ? err.errors.email.message : null;
-      const passwordError = err.errors.password ? err.errors.password.message : null;
-      res.status(400).json({
-        errors: {
-          email: emailError,
-          password: passwordError,
-        },
-      });
+      const errorObj = userErrorMessages(err);
+      res.status(401).json({ errors: errorObj });
     } else {
       res.sendStatus(500);
     }
@@ -41,7 +36,6 @@ exports.list = async (req, res) => {
 exports.find = async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-  
     res.status(201).json({
       name: user.name,
       username: user.username,
@@ -56,28 +50,47 @@ exports.find = async (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  User.findById(req.params.userId, async (err, user) => {
+  User.findById(req.params.userId, async (error, user) => {
     if (!user) {
       res.status(404).json({ error: 'User could not be found' });
     } else {
-      const updatedUser = await user.set(req.body).save();
-      res.status(200).json(updatedUser);
+      try {
+        const updatedUser = await user.set(req.body).save();
+        res.status(200).json(updatedUser);
+      } catch (err) {
+        if (err.name === 'ValidationError') {
+          const errorObj = userErrorMessages(err);
+          res.status(404).json({ errors: errorObj });
+        } else {
+          res.sendStatus(500);
+        }
+      }
     }
   });
 };
 
 exports.updatePassword = (req, res) => {
-  User.findById(req.params.userId, async (err, user) => {
+  User.findById(req.params.userId, async (error, user) => {
     if (!user) {
       res.status(404).json({ error: 'User could not be found' });
     } else {
-      const { oldPassword, newPassword } = req.body
-      if (!await user.validatePassword(oldPassword)) {
-        console.log('here');
-        res.status(401).json({ error: 'Old password is incorrect' });
+      const { oldPassword, newPassword } = req.body;
+      const validPassword = await user.validatePassword(oldPassword);
+      if (validPassword) {
+        try {
+          const updatedUser = await user.set({ password: newPassword }).save();
+          res.status(200).json(updatedUser);
+        } catch (err) {
+          if (err.name === 'ValidationError') {
+            const errorObj = userErrorMessages(err);
+            res.status(404).json({ errors: errorObj });
+          } else {
+            res.sendStatus(500);
+          }
+        }
+      } else {
+        res.status(401).json({ errors: 'Old password is incorrect' });
       }
-      const updatedUser = await user.set({ password: newPassword }).save();
-      res.status(200).json(updatedUser);
     }
   });
 };
