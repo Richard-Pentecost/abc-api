@@ -43,15 +43,15 @@ userSchema.pre('save', function encryptPassword(next) {
 });
 
 
-// userSchema.path('email').validate(async (value) => {
-//   const emailCount = await mongoose.models.User.countDocuments({ email: value });
-//   return !emailCount;
-// }, 'Email already exists');
+userSchema.path('email').validate(async (value) => {
+  const emailCount = await mongoose.models.User.countDocuments({ email: value });
+  return !emailCount;
+}, 'Email already exists');
 
-// userSchema.path('username').validate(async (value) => {
-//   const usernameCount = await mongoose.models.User.countDocuments({ username: value });
-//   return !usernameCount;
-// }, 'Username already exists');
+userSchema.path('username').validate(async (value) => {
+  const usernameCount = await mongoose.models.User.countDocuments({ username: value });
+  return !usernameCount;
+}, 'Username already exists');
 
 userSchema.methods.sanitise = function sanitise(user) {
   const { password, ...noPassword } = user.toObject();

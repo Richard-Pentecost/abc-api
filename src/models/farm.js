@@ -22,6 +22,10 @@ const farmSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A contact number must be provided'],
   },
+  deliveryMethod: {
+    type: String,
+    required: true,
+  },
 });
 
 farmSchema.pre('save', function dataFormat(next) {

@@ -49,24 +49,31 @@ exports.find = async (req, res) => {
   }
 };
 
-exports.updateUser = (req, res) => {
-  User.findById(req.params.userId, async (error, user) => {
-    if (!user) {
-      res.status(404).json({ error: 'User could not be found' });
+exports.updateUser = async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User could not be found' });
+  }
+
+  const { name, username } = req.body;
+  if (!name || !username) {
+    const nameError = !name ? 'A name must be provided' : null;
+    const usernameError = !username ? 'A username must be provided' : null;
+    const errorObj = { name: nameError, username: usernameError };
+    return res.status(404).json({ errors: errorObj });
+  }
+
+  try {
+    const updatedUser = await user.updateOne(req.body);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    if (err.name === 'ValidationError') {
+      const errorObj = userErrorMessages(err);
+      res.status(404).json({ errors: errorObj });
     } else {
-      try {
-        const updatedUser = await user.set(req.body).save();
-        res.status(200).json(updatedUser);
-      } catch (err) {
-        if (err.name === 'ValidationError') {
-          const errorObj = userErrorMessages(err);
-          res.status(404).json({ errors: errorObj });
-        } else {
-          res.sendStatus(500);
-        }
-      }
+      res.sendStatus(500);
     }
-  });
+  }
 };
 
 exports.updatePassword = (req, res) => {

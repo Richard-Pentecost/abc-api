@@ -15,6 +15,7 @@ exports.create = async (req, res) => {
     postcode: req.body.postcode,
     contactName: req.body.contactName,
     contactNumber: req.body.contactNumber,
+    deliveryMethod: req.body.deliveryMethod,
   });
   try {
     const data = await farm.save();

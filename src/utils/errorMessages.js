@@ -33,25 +33,37 @@ const farmErrorMessages = (err) => {
 
 const dataErrorMessages = (err) => {
   const dateError = err.errors.date ? err.errors.date.message : null;
-  const productError = err.errors.product ? err.errors.product.message : null;
-  const quantityError = err.errors.quantity ? err.errors.quantity.message : null;
-  const meterReadingError = err.errors.meterReading ? err.errors.meterReading.message : null;
-  const initialFloatError = err.errors.initialFloat ? err.errors.initialFloat.message : null;
-  const waterUsageError = err.errors.waterUsage ? err.errors.waterUsage.message : null;
-  const pumpDialError = err.errors.pumpDial ? err.errors.pumpDial.message : null;
-  const floatError = err.errors.float ? err.errors.float.message : null;
-  const readingError = err.errors.reading ? err.errors.reading.message : null;
+  const acidProductError = err.errors['acidData.product'] ? err.errors['acidData.product'].message : null;
+  const acidQuantityError = err.errors['acidData.quantity'] ? err.errors['acidData.quantity'].message : null;
+  const acidMeterReadingError = err.errors['acidData.meterReading'] ? err.errors['acidData.meterReading'].message : null;
+  const acidInitialFloatError = err.errors['acidData.initialFloat'] ? err.errors['acidData.initialFloat'].message : null;
+  const acidPumpDialError = err.errors['acidData.pumpDial'] ? err.errors['acidData.pumpDial'].message : null;
+  const acidFloatError = err.errors['acidData.float'] ? err.errors['acidData.float'].message : null;
+  const acidReadingError = err.errors['acidData.reading'] ? err.errors['acidData.reading'].message : null;
+  const chlorineProductError = err.errors['chlorineData.product'] ? err.errors['chlorineData.product'].message : null;
+  const chlorineQuantityError = err.errors['chlorineData.quantity'] ? err.errors['chlorineData.quantity'].message : null;
+  const chlorineMeterReadingError = err.errors['chlorineData.meterReading'] ? err.errors['chlorineData.meterReading'].message : null;
+  const chlorineInitialFloatError = err.errors['chlorineData.initialFloat'] ? err.errors['chlorineData.initialFloat'].message : null;
+  const chlorinePumpDialError = err.errors['chlorineData.pumpDial'] ? err.errors['chlorineData.pumpDial'].message : null;
+  const chlorineFloatError = err.errors['chlorineData.float'] ? err.errors['chlorineData.float'].message : null;
+  const chlorineReadingError = err.errors['chlorineData.reading'] ? err.errors['chlorineData.reading'].message : null;
 
   const dataErrorObj = {
     date: dateError,
-    product: productError,
-    quantity: quantityError,
-    meterReading: meterReadingError,
-    initialFloat: initialFloatError,
-    waterUsage: waterUsageError,
-    pumpDial: pumpDialError,
-    float: floatError,
-    reading: readingError,
+    acidProduct: acidProductError,
+    acidQuantity: acidQuantityError,
+    acidMeterReading: acidMeterReadingError,
+    acidInitialFloat: acidInitialFloatError,
+    acidPumpDial: acidPumpDialError,
+    acidFloat: acidFloatError,
+    acidReading: acidReadingError,
+    chlorineProduct: chlorineProductError,
+    chlorineQuantity: chlorineQuantityError,
+    chlorineMeterReading: chlorineMeterReadingError,
+    chlorineInitialFloat: chlorineInitialFloatError,
+    chlorinePumpDial: chlorinePumpDialError,
+    chlorineFloat: chlorineFloatError,
+    chlorineReading: chlorineReadingError,
   };
 
   return dataErrorObj;
