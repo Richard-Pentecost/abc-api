@@ -7,15 +7,6 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }, () => {
-    app.listen(3000);
+    app.listen(process.env.PORT);
   }
 );
-
-mongoose.connection.on('connected', () => {
-  console.log('Connected to mongo instance');
-  console.log('Database is running port on 3000');
-});
-
-mongoose.connection.on('error', err => {
-  console.log('Error connecting to mongo', err);
-});
