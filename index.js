@@ -7,6 +7,6 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }, () => {
-    app.listen(process.env.PORT);
+    app.listen(process.env.PORT || 3000);
   }
 );

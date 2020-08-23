@@ -83,8 +83,8 @@ exports.updatePassword = (req, res) => {
       const validPassword = await user.validatePassword(oldPassword);
       if (validPassword) {
         try {
-          // const updatedUser = await user.set({ password: newPassword }).save();
-          const updatedUser = await user.updateOne({ password: newPassword });
+          const updatedUser = await user.set({ password: newPassword }).save();
+          // const updatedUser = await user.updateOne({ password: newPassword });
           res.status(200).json(updatedUser);
         } catch (err) {
           if (err.name === 'ValidationError') {
