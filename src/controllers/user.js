@@ -28,7 +28,6 @@ exports.list = async (req, res) => {
     const users = await User.find();
     res.status(201).json(users);
   } catch (err) {
-    console.log(err);
     res.sendStatus(400);
   }
 };
@@ -44,7 +43,6 @@ exports.find = async (req, res) => {
       id: user._id,
     });
   } catch (err) {
-    console.log(err);
     res.status(404).json({ error: 'User could not be found '});
   }
 };
@@ -85,7 +83,8 @@ exports.updatePassword = (req, res) => {
       const validPassword = await user.validatePassword(oldPassword);
       if (validPassword) {
         try {
-          const updatedUser = await user.set({ password: newPassword }).save();
+          // const updatedUser = await user.set({ password: newPassword }).save();
+          const updatedUser = await user.updateOne({ password: newPassword });
           res.status(200).json(updatedUser);
         } catch (err) {
           if (err.name === 'ValidationError') {

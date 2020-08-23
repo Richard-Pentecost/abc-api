@@ -57,7 +57,7 @@ exports.create = async (req, res) => {
         const errorObj = dataErrorMessages(err);
         res.status(401).json({ errors: errorObj });
       } else {
-        console.log('Some other error status code 500');
+        // console.log('Some other error status code 500');
         res.sendStatus(500);
       }
     }
@@ -165,7 +165,7 @@ exports.update = async (req, res) => {
       const errorObj = dataErrorMessages(err);
       res.status(401).json({ errors: errorObj });
     } else {
-      console.log('error', err);
+      // console.log('error', err);
       res.sendStatus(500);
     }
   }
