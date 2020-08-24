@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 const { userErrorMessages } = require('../utils/errorMessages');
 
 exports.create = async (req, res) => {
@@ -83,8 +84,8 @@ exports.updatePassword = (req, res) => {
       const validPassword = await user.validatePassword(oldPassword);
       if (validPassword) {
         try {
-          // const updatedUser = await user.set({ password: newPassword }).save();
-          const updatedUser = await user.updateOne({ password: newPassword });
+          const encryptedPassword = await bcrypt.hash(newPassword, 10);
+          const updatedUser = await user.updateOne({ password: encryptedPassword });
           res.status(200).json(updatedUser);
         } catch (err) {
           if (err.name === 'ValidationError') {
