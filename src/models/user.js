@@ -42,7 +42,6 @@ userSchema.pre('save', function encryptPassword(next) {
   }
 });
 
-
 userSchema.path('email').validate(async (value) => {
   const emailCount = await mongoose.models.User.countDocuments({ email: value });
   return !emailCount;
