@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon -r dotenv/config index.js",
     "test": "mocha tests/**/*.test.js --opts .mocha.opts"
   },
   "repository": {
