@@ -28,7 +28,7 @@ const dataSchema = new mongoose.Schema({
     },
     initialFloat: {
       type: Number,
-      validate: [i => i > 0, 'The acid float before delivery must be a positive number'],
+      validate: [i => i >= 0, 'The acid float before delivery can\'t be a negative number'],
       required: [true, 'An acid float before delivery value must be provided'],
     },
     pumpDial: {
@@ -42,9 +42,8 @@ const dataSchema = new mongoose.Schema({
       required: [true, 'An acid float value must be provided'],
     },
     reading: {
-      type: Number,
-      validate: [i => i >= 0, 'The acid reading can\'t be a negative number'],
-      required: [true, 'An acid reading value must be provided'],
+      type: String,
+      required: [true, 'An acid reading must be provided'],
     },
     kgActual: Number,
     deliveryDate: Date,
@@ -67,7 +66,7 @@ const dataSchema = new mongoose.Schema({
     },
     initialFloat: {
       type: Number,
-      validate: [i => i > 0, 'The chlorine float before delivery must be a positive number'],
+      validate: [i => i >= 0, 'The chlorine float before delivery can\'t be a negative number'],
       required: [true, 'A chlorine float before delivery value must be provided'],
     },
     pumpDial: {
@@ -81,9 +80,8 @@ const dataSchema = new mongoose.Schema({
       required: [true, 'A chlorine float value must be provided'],
     },
     reading: {
-      type: Number,
-      validate: [i => i >= 0, 'The chlorine reading can\'t be a negative number'],
-      required: [true, 'A chlorine reading value must be provided'],
+      type: String,
+      required: [true, 'A chlorine reading must be provided'],
     },
     kgActual: Number,
     deliveryDate: Date,

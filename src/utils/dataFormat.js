@@ -1,17 +1,3 @@
-
-const farmNameFormat = (farmName) => {
-  const formattedFarm = farmName.split('').map((char, index) => {
-    if (index === 0 && isNaN(char)) {
-      return char.toUpperCase();
-    }
-    if (farmName[index - 1] === ' ') {
-      return char.toUpperCase();
-    };
-    return char;
-  }).join('');
-  return formattedFarm;
-};
-
 const postcodeFormat = (postcode) => {
   const len = postcode.length;
   const formattedPostcode = postcode.toUpperCase().split('');
@@ -33,15 +19,7 @@ const contactNameFormat = (contactName) => {
   return formattedContactName;
 };
 
-const contactNumberFormat = (contactNumber) => {
-  const formattedContactNumber = contactNumber.split('');
-  formattedContactNumber.splice(5, 0, ' ');
-  return formattedContactNumber.join('');
-};
-
 module.exports = {
-  farmNameFormat,
   postcodeFormat,
   contactNameFormat,
-  contactNumberFormat,
 };

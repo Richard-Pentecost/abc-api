@@ -13,7 +13,7 @@ exports.login = async (req, res) => {
       permissionLevel: user.permissionLevel,
       id: user._id,
     };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '12h' }, (err, token) => {
       if (err) {
         res.sendStatus(500);
       } else {

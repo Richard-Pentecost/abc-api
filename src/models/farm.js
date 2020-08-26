@@ -1,4 +1,8 @@
 const mongoose = require('mongoose');
+const {
+  postcodeFormat,
+  contactNameFormat,
+} = require('../utils/dataFormat');
 
 const farmSchema = new mongoose.Schema({
   user: {
@@ -26,12 +30,13 @@ const farmSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  comments: String,
 });
 
 farmSchema.pre('save', function dataFormat(next) {
-  this.farmName = this.farmName.toLowerCase();
-  this.postcode = this.postcode.toLowerCase().split('').filter(c => c !== ' ').join('');
-  this.contactName = this.contactName.toLowerCase();
+  // this.postcode = this.postcode.toUpperCase().split('').filter(c => c !== ' ').join('');
+  this.postcode = postcodeFormat(this.postcode);
+  this.contactName = contactNameFormat(this.contactName);
   this.contactNumber = this.contactNumber.split('').filter(i => i !== ' ').join('');
   next();
 });

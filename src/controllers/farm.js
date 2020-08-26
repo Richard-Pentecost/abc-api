@@ -1,12 +1,6 @@
 const Farm = require('../models/farm');
 const Data = require('../models/data');
 const { farmErrorMessages } = require('../utils/errorMessages');
-const {
-  farmNameFormat,
-  postcodeFormat,
-  contactNameFormat,
-  contactNumberFormat,
-} = require('../utils/dataFormat');
 
 exports.create = async (req, res) => {
   const farm = new Farm({
@@ -35,30 +29,15 @@ exports.list = async (req, res) => {
   if (req.query.query) {
     const queryObj = JSON.parse(req.query.query);
     if (queryObj.searchString) {
-      const regexQuery = { $regex: queryObj.searchString.toLowerCase() };
+      const regexQuery = { $regex: queryObj.searchString, $options: 'i' };
       query.or([{ farmName: regexQuery }, { postcode: regexQuery }, { contactName: regexQuery }]);
-      // if (queryObj.contactName) {
-      //   query.where('contactName').regex(queryObj.contactName);
-      // } else if (queryObj.postcode) {
-      //   query.where('postcode').regex(queryObj.postcode);
-      // }
-      // query = Farm.find({
-      //   $or: [{ farmName: { $regex: queryObj.searchString } },
-      //     { postcode: { $regex: queryObj.searchString } }],
-      // });
     }
   }
   try {
-    const farms = await query.exec();
-    farms.map(farm => {
-      farm.farmName = farmNameFormat(farm.farmName);
-      farm.postcode = postcodeFormat(farm.postcode);
-      farm.contactName = contactNameFormat(farm.contactName);
-      farm.contactNumber = contactNumberFormat(farm.contactNumber);
-      return farm;
-    });
+    const farms = await query.sort({ farmName: 1 }).exec();
     res.status(200).json(farms);
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 };
