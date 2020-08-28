@@ -16,17 +16,21 @@ const specGravFactor = (deliveryMethod, product) => {
   }
 };
 
-const deliveryDate = (data, date, previousDate, previousFloat, factor) => {
-  const previousKilos = previousFloat * factor;
-  const initialKilos = data.initialFloat * factor;
-  const finalKilos = data.float * factor;
+const deliveryDate = (data, date, previousDate, previousFloat, previousDeliveryDate, factor) => {
   const days = moment(date).diff(moment(previousDate), 'days');
-
-  const usedKilos = previousKilos - initialKilos;
-  const kilosPerDay = usedKilos / days;
-  const daysLeft = Math.floor(finalKilos / kilosPerDay);
-
-  const nextDeliveryDate = new Date(moment(date).add(daysLeft, 'days'));
+  let nextDeliveryDate;
+  const formattedInitialFloat = Number(data.initialFloat);
+  if (previousFloat === formattedInitialFloat) {
+    nextDeliveryDate = new Date(moment(previousDeliveryDate).add(days, 'days'));
+  } else {
+    const previousKilos = previousFloat * factor;
+    const initialKilos = data.initialFloat * factor;
+    const finalKilos = data.float * factor;
+    const usedKilos = previousKilos - initialKilos;
+    const kilosPerDay = usedKilos / days;
+    const daysLeft = Math.floor(finalKilos / kilosPerDay);
+    nextDeliveryDate = new Date(moment(date).add(daysLeft, 'days'));
+  }
   return nextDeliveryDate;
 };
 

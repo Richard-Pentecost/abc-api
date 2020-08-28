@@ -9,12 +9,21 @@ exports.create = async (req, res) => {
   const chlorineFactor = specGravFactor(req.body.deliveryMethod, 'chlorine');
   const acidProductKilos = req.body.acidData.float * acidFactor;
   const chlorineProductKilos = req.body.chlorineData.float * chlorineFactor;
-  const { chlorineData, acidData, date, previousDate, previousAcidFloat, previousChlorineFloat } = req.body;
+  const {
+    chlorineData,
+    acidData,
+    date,
+    previousDate,
+    previousAcidFloat,
+    previousChlorineFloat,
+    previousAcidDeliveryDate,
+    previousChlorineDeliveryDate,
+  } = req.body;
   let acidDeliveryDate = '';
   let chlorineDeliveryDate = '';
   if (previousDate) {
-    acidDeliveryDate = deliveryDate(acidData, date, previousDate, previousAcidFloat, acidFactor);
-    chlorineDeliveryDate = deliveryDate(chlorineData, date, previousDate, previousChlorineFloat, chlorineFactor);
+    acidDeliveryDate = deliveryDate(acidData, date, previousDate, previousAcidFloat, previousAcidDeliveryDate, acidFactor);
+    chlorineDeliveryDate = deliveryDate(chlorineData, date, previousDate, previousChlorineFloat, previousChlorineDeliveryDate, chlorineFactor);
   }
 
   const newData = new Data({
@@ -122,12 +131,21 @@ exports.update = async (req, res) => {
   const chlorineFactor = specGravFactor(req.body.deliveryMethod, 'chlorine');
   const acidProductKilos = req.body.acidData.float * acidFactor;
   const chlorineProductKilos = req.body.chlorineData.float * chlorineFactor;
-  const { chlorineData, acidData, date, previousDate, previousAcidFloat, previousChlorineFloat } = req.body;
+  const {
+    chlorineData,
+    acidData,
+    date,
+    previousDate,
+    previousAcidFloat,
+    previousChlorineFloat,
+    previousAcidDeliveryDate,
+    previousChlorineDeliveryDate,
+  } = req.body;
   let acidDeliveryDate = '';
   let chlorineDeliveryDate = '';
   if (previousDate) {
-    acidDeliveryDate = deliveryDate(acidData, date, previousDate, previousAcidFloat, acidFactor);
-    chlorineDeliveryDate = deliveryDate(chlorineData, date, previousDate, previousChlorineFloat, chlorineFactor);
+    acidDeliveryDate = deliveryDate(acidData, date, previousDate, previousAcidFloat, previousAcidDeliveryDate, acidFactor);
+    chlorineDeliveryDate = deliveryDate(chlorineData, date, previousDate, previousChlorineFloat, previousChlorineDeliveryDate, chlorineFactor);
   }
   const newData = {
     date: req.body.date,

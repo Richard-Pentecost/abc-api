@@ -1,6 +1,6 @@
 const postcodeFormat = (postcode) => {
   const len = postcode.length;
-  const formattedPostcode = postcode.toUpperCase().split('');
+  const formattedPostcode = postcode.toUpperCase().split('').filter(c => c !== ' ');
   if (len === 6) {
     formattedPostcode.splice(3, 0, ' ');
   } else {
