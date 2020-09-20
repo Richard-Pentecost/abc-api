@@ -30,6 +30,10 @@ const farmSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  lastVisit: Date,
+  acidDeliveryDate: Date,
+  chlorineDeliveryDate: Date,
+  accessCodes: String,
   comments: String,
 });
 

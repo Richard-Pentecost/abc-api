@@ -10,6 +10,7 @@ exports.create = async (req, res) => {
     contactName: req.body.contactName,
     contactNumber: req.body.contactNumber,
     deliveryMethod: req.body.deliveryMethod,
+    comments: req.body.comments,
   });
   try {
     const data = await farm.save();
@@ -25,6 +26,7 @@ exports.create = async (req, res) => {
 };
 
 exports.list = async (req, res) => {
+  // console.log(req.query);
   const query = Farm.find();
   if (req.query.query) {
     const queryObj = JSON.parse(req.query.query);
@@ -33,8 +35,14 @@ exports.list = async (req, res) => {
       query.or([{ farmName: regexQuery }, { postcode: regexQuery }, { contactName: regexQuery }]);
     }
   }
+
+  if (req.query.sort) {
+    const sortParams = JSON.parse(req.query.sort);
+    query.sort(sortParams);
+  }
+
   try {
-    const farms = await query.sort({ farmName: 1 }).exec();
+    const farms = await query.sort('farmName').exec();
     res.status(200).json(farms);
   } catch (err) {
     console.log(err);
@@ -43,6 +51,7 @@ exports.list = async (req, res) => {
 };
 
 exports.update = (req, res) => {
+  // console.log(req.body);
   Farm.findById(req.params.farmId, async (error, farm) => {
     if (!farm) {
       res.status(404).json({ error: 'Farm could not be found' });

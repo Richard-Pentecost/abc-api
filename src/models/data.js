@@ -38,7 +38,7 @@ const dataSchema = new mongoose.Schema({
     },
     float: {
       type: Number,
-      validate: [i => i > 0, 'The acid float must be a positive number'],
+      validate: [i => i >= 0, 'The acid float can\'t be a negative number'],
       required: [true, 'An acid float value must be provided'],
     },
     reading: {
@@ -76,7 +76,7 @@ const dataSchema = new mongoose.Schema({
     },
     float: {
       type: Number,
-      validate: [i => i > 0, 'The chlorine float must be a positive number'],
+      validate: [i => i >= 0, 'The chlorine float can\'t be a negative number'],
       required: [true, 'A chlorine float value must be provided'],
     },
     reading: {
