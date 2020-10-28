@@ -10,6 +10,7 @@ exports.create = async (req, res) => {
     contactName: req.body.contactName,
     contactNumber: req.body.contactNumber,
     deliveryMethod: req.body.deliveryMethod,
+    accessCodes: req.body.accessCodes,
     comments: req.body.comments,
   });
   try {
@@ -26,7 +27,6 @@ exports.create = async (req, res) => {
 };
 
 exports.list = async (req, res) => {
-  // console.log(req.query);
   const query = Farm.find();
   if (req.query.query) {
     const queryObj = JSON.parse(req.query.query);
@@ -45,13 +45,11 @@ exports.list = async (req, res) => {
     const farms = await query.sort('farmName').exec();
     res.status(200).json(farms);
   } catch (err) {
-    console.log(err);
     res.sendStatus(500);
   }
 };
 
 exports.update = (req, res) => {
-  // console.log(req.body);
   Farm.findById(req.params.farmId, async (error, farm) => {
     if (!farm) {
       res.status(404).json({ error: 'Farm could not be found' });
@@ -77,9 +75,7 @@ exports.delete = (req, res) => {
     if (err) {
       res.status(404).json({ error: 'Farm could not be found' });
     } else {
-      Data.deleteMany({ farmId: req.params.farmId }, (error) => {
-        console.log(error);
-      });
+      Data.deleteMany({ farmId: req.params.farmId });
       res.sendStatus(200);
     }
   });

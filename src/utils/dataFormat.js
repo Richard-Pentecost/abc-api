@@ -19,7 +19,13 @@ const contactNameFormat = (contactName) => {
   return formattedContactName;
 };
 
+const contactNumberFormat = (contactNumber) => {
+  const number = contactNumber.split('').filter(i => i !== ' ').join('');
+  return number.includes('/') ? number.split('/').join(' / ') : number;
+};
+
 module.exports = {
   postcodeFormat,
   contactNameFormat,
+  contactNumberFormat,
 };

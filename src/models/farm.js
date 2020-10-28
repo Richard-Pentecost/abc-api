@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const {
   postcodeFormat,
   contactNameFormat,
+  contactNumberFormat,
 } = require('../utils/dataFormat');
 
 const farmSchema = new mongoose.Schema({
@@ -30,18 +31,19 @@ const farmSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  lastVisit: Date,
-  acidDeliveryDate: Date,
-  chlorineDeliveryDate: Date,
   accessCodes: String,
   comments: String,
+  data: {
+    lastVisit: Date,
+    acidDeliveryDate: Date,
+    chlorineDeliveryDate: Date,
+  },
 });
 
 farmSchema.pre('save', function dataFormat(next) {
-  // this.postcode = this.postcode.toUpperCase().split('').filter(c => c !== ' ').join('');
   this.postcode = postcodeFormat(this.postcode);
   this.contactName = contactNameFormat(this.contactName);
-  this.contactNumber = this.contactNumber.split('').filter(i => i !== ' ').join('');
+  this.contactNumber = contactNumberFormat(this.contactNumber);
   next();
 });
 
