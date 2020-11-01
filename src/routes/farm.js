@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth');
 const router = express.Router();
 
 router.post('/', auth, farmController.create);
-router.get('/', farmController.list);
+router.get('/', auth, farmController.list);
 // router.get('/:farmId', farmController.find);
 router.patch('/:farmId', auth, farmController.update);
 router.delete('/:farmId', auth, farmController.delete);
