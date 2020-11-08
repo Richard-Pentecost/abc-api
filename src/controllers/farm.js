@@ -38,7 +38,11 @@ exports.list = async (req, res) => {
 
   if (req.query.sort) {
     const sortParams = JSON.parse(req.query.sort);
-    query.sort(sortParams);
+    let field = `data.${sortParams}`;
+    if (sortParams.includes('-')) {
+      field = `-data.${sortParams.substring(1)}`;
+    }
+    query.sort(field);
   }
 
   try {
