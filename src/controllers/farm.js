@@ -26,8 +26,20 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.listAll = async (req, res) => {
+  try {
+    const farms = await Farm.find({}).sort('farmName');
+    if (!farms) {
+      res.status(401).json({ error: "Couldn't find farms" });
+    }
+    res.status(201).json(farms);
+  } catch (err) {
+    res.status(401).json({ error: 'Error with database' });
+  }
+};
+
 exports.list = async (req, res) => {
-  const query = Farm.find();
+  const query = Farm.find({ status: 1 });
   if (req.query.query) {
     const queryObj = JSON.parse(req.query.query);
     if (queryObj.searchString) {

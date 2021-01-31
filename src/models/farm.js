@@ -31,6 +31,10 @@ const farmSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: Number,
+    default: 1,
+  },
   accessCodes: String,
   comments: String,
   data: {
